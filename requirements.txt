@@ -1,0 +1,5 @@
+playwright
+boto3
+sqlalchemy
+psycopg2-binary
+python-dotenv
