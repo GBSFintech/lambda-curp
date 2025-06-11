@@ -1,5 +1,8 @@
-playwright
-boto3
+fastapi
+uvicorn
 sqlalchemy
+boto3
 psycopg2-binary
+playwright
 python-dotenv
+requests

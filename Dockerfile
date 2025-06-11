@@ -1,19 +1,27 @@
 FROM python:3.11-bullseye
 
-RUN apt-get update
-RUN apt-get install -y curl gnupg libglib2.0-0 libnss3 libatk-bridge2.0-0 libxss1 libasound2 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxtst6 libgtk-3-0 libdrm2 libgbm1 libxrandr2 libxrender1 libxshmfence1 libxinerama1 libatk1.0-0 libcups2 libpangocairo-1.0-0 libpango-1.0-0 libx11-6 libxcb-dri3-0 build-essential
-RUN rm -rf /var/lib/apt/lists/*
+# Instala dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    wget gnupg ca-certificates curl unzip \
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+    libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 \
+    libxshmfence1 libxss1 libxtst6 libnss3 libx11-xcb1 libgtk-3-0 \
+    libxcb1 libx11-6 libxext6 fonts-liberation \
+    && apt-get clean
 
-RUN pip install --upgrade pip
-RUN pip install awslambdaric
-
+# Crear directorio de trabajo
 WORKDIR /app
 
+# Copiar requerimientos
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+RUN playwright install --with-deps
 
-RUN playwright install chromium
-
+# Copiar el código
 COPY . .
 
-CMD ["python3", "-m", "awslambdaric", "handler.handler"]
+# Exponer el puerto
+EXPOSE 8000
+
+# Comando por defecto
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
