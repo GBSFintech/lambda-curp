@@ -144,7 +144,7 @@ def get_validate_curp_playwright(user_id: int = None, db: Session = Depends(get_
     FILE_NAME = f"user_{user_id}/validacion_curp_{user_id}.pdf"
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(headless=False,  args=["--no-sandbox"])
             context = browser.new_context(accept_downloads=True)
             page = context.new_page()
             page.goto(SITE_URL)
